@@ -122,20 +122,20 @@ it('refuses to flush translations of an unsaved model', function () {
     $article = new Article(['title' => 'Salut']);
     $article->setTranslation('title', 'en', 'Hi');
 
-    expect(fn() => $article->flushTranslations())->toThrow(ModelNotSavedException::class);
+    expect(fn () => $article->flushTranslations())->toThrow(ModelNotSavedException::class);
 });
 
 it('rejects non translatable attributes', function () {
-    expect(fn() => $this->article->setTranslation('slug', 'en', 'x'))
+    expect(fn () => $this->article->setTranslation('slug', 'en', 'x'))
         ->toThrow(NotTranslatableException::class)
-        ->and(fn() => $this->article->getTranslation('slug'))
+        ->and(fn () => $this->article->getTranslation('slug'))
         ->toThrow(NotTranslatableException::class);
 });
 
 it('rejects unsupported locales', function () {
-    expect(fn() => $this->article->setLocale('de'))->toThrow(UnsupportedLocaleException::class)
-        ->and(fn() => $this->article->setTranslation('title', 'de', 'x'))->toThrow(UnsupportedLocaleException::class)
-        ->and(fn() => $this->article->getTranslation('title', 'de'))->toThrow(UnsupportedLocaleException::class);
+    expect(fn () => $this->article->setLocale('de'))->toThrow(UnsupportedLocaleException::class)
+        ->and(fn () => $this->article->setTranslation('title', 'de', 'x'))->toThrow(UnsupportedLocaleException::class)
+        ->and(fn () => $this->article->getTranslation('title', 'de'))->toThrow(UnsupportedLocaleException::class);
 });
 
 it('applies the active locale in toArray()', function () {
@@ -174,7 +174,7 @@ it('eager loads translations without N+1 queries', function () {
     $connection->enableQueryLog();
     $connection->flushQueryLog();
 
-    $titles = Article::withTranslations()->get()->map(fn(Article $a) => $a->title)->all();
+    $titles = Article::withTranslations()->get()->map(fn (Article $a) => $a->title)->all();
 
     expect($connection->getQueryLog())->toHaveCount(2)
         ->and($titles)->toContain('Title 1', 'Title 2', 'Title 3');

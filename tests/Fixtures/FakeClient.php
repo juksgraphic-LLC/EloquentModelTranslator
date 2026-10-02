@@ -21,7 +21,9 @@ final class FakeClient implements ClientInterface
     /**
      * @param list<ResponseInterface|Throwable> $queue
      */
-    public function __construct(private array $queue) {}
+    public function __construct(private array $queue)
+    {
+    }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
     {

@@ -7,4 +7,6 @@ namespace Juksgraphic\EloquentModelTranslator\Tests\Fixtures;
 use Psr\Http\Client\ClientExceptionInterface;
 use RuntimeException;
 
-final class FakeClientException extends RuntimeException implements ClientExceptionInterface {}
+final class FakeClientException extends RuntimeException implements ClientExceptionInterface
+{
+}

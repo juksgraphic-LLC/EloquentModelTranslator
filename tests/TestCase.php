@@ -44,7 +44,7 @@ abstract class TestCase extends BaseTestCase
 
         Translator::reset();
         $this->currentLocale = 'fr';
-        Translator::resolveLocaleUsing(fn(): string => $this->currentLocale);
+        Translator::resolveLocaleUsing(fn (): string => $this->currentLocale);
     }
 
     protected function tearDown(): void

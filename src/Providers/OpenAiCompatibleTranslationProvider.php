@@ -60,12 +60,12 @@ class OpenAiCompatibleTranslationProvider implements TranslationProvider
         protected int $retryDelayMs = 500,
         protected float $temperature = 0.2,
     ) {
-        $this->client         = $client ?? HttpDefaults::client();
+        $this->client = $client ?? HttpDefaults::client();
         $this->requestFactory = $requestFactory
             ?? ($this->client instanceof RequestFactoryInterface ? $this->client : HttpDefaults::requestFactory());
-        $this->streamFactory  = $streamFactory
+        $this->streamFactory = $streamFactory
             ?? ($this->client instanceof StreamFactoryInterface ? $this->client : HttpDefaults::streamFactory());
-        $this->prompt         = $prompt ?? new DefaultTranslationPrompt();
+        $this->prompt = $prompt ?? new DefaultTranslationPrompt();
     }
 
     public function translate(array $fields, string $sourceLocale, string $targetLocale): array
@@ -86,12 +86,12 @@ class OpenAiCompatibleTranslationProvider implements TranslationProvider
     {
         try {
             $body = json_encode([
-                'model'           => $this->model,
-                'messages'        => [
+                'model' => $this->model,
+                'messages' => [
                     ['role' => 'system', 'content' => $this->prompt->system($sourceLocale, $targetLocale)],
                     ['role' => 'user', 'content' => $this->prompt->user($fields)],
                 ],
-                'temperature'     => $this->temperature,
+                'temperature' => $this->temperature,
                 'response_format' => ['type' => 'json_object'],
             ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
@@ -159,7 +159,7 @@ class OpenAiCompatibleTranslationProvider implements TranslationProvider
 
         $content = $data['choices'][0]['message']['content'] ?? null;
 
-        if (!is_string($content) || $content === '') {
+        if (! is_string($content) || $content === '') {
             throw TranslationFailedException::invalidResponse($this->name, 'empty content');
         }
 

@@ -29,7 +29,9 @@ final class Translator
     /**
      * Static registry: not instantiable.
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Sets the package configuration.
@@ -83,7 +85,7 @@ final class Translator
      */
     public static function reset(): void
     {
-        self::$config   = null;
+        self::$config = null;
         self::$resolver = null;
     }
 }

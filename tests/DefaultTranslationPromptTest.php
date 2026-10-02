@@ -33,6 +33,6 @@ it('parses plain and fenced JSON', function () {
 it('rejects malformed or non-object content', function () {
     $prompt = new DefaultTranslationPrompt();
 
-    expect(fn() => $prompt->parse('not json', 'test'))->toThrow(TranslationFailedException::class, 'malformed JSON')
-        ->and(fn() => $prompt->parse('"just a string"', 'test'))->toThrow(TranslationFailedException::class, 'not a JSON object');
+    expect(fn () => $prompt->parse('not json', 'test'))->toThrow(TranslationFailedException::class, 'malformed JSON')
+        ->and(fn () => $prompt->parse('"just a string"', 'test'))->toThrow(TranslationFailedException::class, 'not a JSON object');
 });

@@ -14,16 +14,23 @@ function makeProvider(FakeClient $client, ?TranslationPrompt $prompt = null): Op
     $factory = new HttpFactory();
 
     return new OpenAiCompatibleTranslationProvider(
-        'secret', 'test-model', $client, $factory, $factory,
-        baseUri: 'https://llm.test/v1/', prompt: $prompt, maxRetries: 2, retryDelayMs: 0,
+        'secret',
+        'test-model',
+        $client,
+        $factory,
+        $factory,
+        baseUri: 'https://llm.test/v1/',
+        prompt: $prompt,
+        maxRetries: 2,
+        retryDelayMs: 0,
     );
 }
 
 it('translates and sends a well formed request', function () {
-    $client   = new FakeClient([FakeClient::chat('{"title":"Hello"}')]);
-    $result   = makeProvider($client)->translate(['title' => 'Bonjour'], 'fr', 'en');
-    $request  = $client->requests[0];
-    $payload  = json_decode((string) $request->getBody(), true);
+    $client = new FakeClient([FakeClient::chat('{"title":"Hello"}')]);
+    $result = makeProvider($client)->translate(['title' => 'Bonjour'], 'fr', 'en');
+    $request = $client->requests[0];
+    $payload = json_decode((string) $request->getBody(), true);
 
     expect($result)->toBe(['title' => 'Hello'])
         ->and((string) $request->getUri())->toBe('https://llm.test/v1/chat/completions')
@@ -70,7 +77,7 @@ it('does not retry on 4xx', function () {
 });
 
 it('retries on network errors then throws', function () {
-    $e      = new FakeClientException('boom');
+    $e = new FakeClientException('boom');
     $client = new FakeClient([$e, $e, $e]);
 
     expect(fn () => makeProvider($client)->translate(['a' => 'x'], 'fr', 'en'))
@@ -88,14 +95,25 @@ it('throws on empty or malformed API answers', function () {
 });
 
 it('uses an injected prompt', function () {
-    $prompt = new class implements TranslationPrompt {
-        public function system(string $sourceLocale, string $targetLocale): string { return "SYS {$sourceLocale}>{$targetLocale}"; }
-        public function user(array $fields): string { return 'USER'; }
-        public function parse(string $content, string $provider): array { return ['parsed' => $content]; }
+    $prompt = new class () implements TranslationPrompt {
+        public function system(string $sourceLocale, string $targetLocale): string
+        {
+            return "SYS {$sourceLocale}>{$targetLocale}";
+        }
+
+        public function user(array $fields): string
+        {
+            return 'USER';
+        }
+
+        public function parse(string $content, string $provider): array
+        {
+            return ['parsed' => $content];
+        }
     };
 
-    $client  = new FakeClient([FakeClient::chat('raw')]);
-    $result  = makeProvider($client, $prompt)->translate(['a' => 'x'], 'fr', 'en');
+    $client = new FakeClient([FakeClient::chat('raw')]);
+    $result = makeProvider($client, $prompt)->translate(['a' => 'x'], 'fr', 'en');
     $payload = json_decode((string) $client->requests[0]->getBody(), true);
 
     expect($result)->toBe(['parsed' => 'raw'])
@@ -104,7 +122,7 @@ it('uses an injected prompt', function () {
 });
 
 it('points Cerebras to its own endpoint by default', function () {
-    $client  = new FakeClient([FakeClient::chat('{"a":"b"}')]);
+    $client = new FakeClient([FakeClient::chat('{"a":"b"}')]);
     $factory = new HttpFactory();
 
     (new CerebrasTranslationProvider('k', 'm', $client, $factory, $factory))->translate(['a' => 'x'], 'fr', 'en');

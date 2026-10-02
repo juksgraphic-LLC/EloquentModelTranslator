@@ -49,7 +49,9 @@ final class HttpDefaults
     /**
      * Static helper: not instantiable.
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Returns a PSR-18 client.
@@ -126,7 +128,7 @@ final class HttpDefaults
     private static function first(array $candidates, string $interface): ?object
     {
         foreach ($candidates as $class) {
-            if (!class_exists($class)) {
+            if (! class_exists($class)) {
                 continue;
             }
 

@@ -9,7 +9,9 @@ use Juksgraphic\EloquentModelTranslator\Contracts\TranslationProvider;
 
 final class CallbackProvider implements TranslationProvider
 {
-    public function __construct(private Closure $callback) {}
+    public function __construct(private Closure $callback)
+    {
+    }
 
     public function translate(array $fields, string $sourceLocale, string $targetLocale): array
     {
