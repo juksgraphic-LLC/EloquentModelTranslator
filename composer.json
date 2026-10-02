@@ -1,12 +1,19 @@
 {
     "name": "juksgraphic/eloquentmodeltranslator",
-    "description": "This is my package eloquentmodeltranslator",
+    "description": "Per-attribute translations for Eloquent models, with optional LLM machine translation through PSR-18 providers.",
     "keywords": [
         "Juksgraphic",
-        "eloquentmodeltranslator"
+        "eloquentmodeltranslator",
+        "eloquent",
+        "laravel",
+        "translation",
+        "translatable",
+        "i18n",
+        "llm"
     ],
     "homepage": "https://github.com/juksgraphic/eloquentmodeltranslator",
     "license": "MIT",
+    "type": "library",
     "authors": [
         {
             "name": "Kingsley Guillaume",
@@ -14,22 +21,37 @@
             "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/juksgraphic/eloquentmodeltranslator/issues",
+        "source": "https://github.com/juksgraphic/eloquentmodeltranslator"
+    },
     "require": {
-        "php": "^8.4"
+        "php": "^8.4",
+        "illuminate/database": "^13.34",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0"
     },
     "require-dev": {
-        "pestphp/pest": "^4.0",
+        "ext-pdo_sqlite": "*",
         "friendsofphp/php-cs-fixer": "^3.21.1",
+        "guzzlehttp/guzzle": "^8.2",
+        "guzzlehttp/psr7": "^3.1",
+        "pestphp/pest": "^4.0",
         "spatie/ray": "^1.28"
+    },
+    "suggest": {
+        "guzzlehttp/guzzle": "A PSR-18 HTTP client, needed by the Laravel service provider for the Cerebras provider (any PSR-18 client works when wiring providers by hand).",
+        "guzzlehttp/psr7": "PSR-17 request and stream factories (HttpFactory) to build providers."
     },
     "autoload": {
         "psr-4": {
-            "Juksgraphic\\EloquentModelTranslator\\": "src"
+            "Juksgraphic\\EloquentModelTranslator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Juksgraphic\\EloquentModelTranslator\\Tests\\": "tests"
+            "Juksgraphic\\EloquentModelTranslator\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -42,6 +64,13 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Juksgraphic\\EloquentModelTranslator\\Laravel\\EloquentModelTranslatorServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",
