@@ -30,8 +30,16 @@ class CerebrasTranslationProvider extends OpenAiCompatibleTranslationProvider
         float $temperature = 0.2,
     ) {
         parent::__construct(
-            $apiKey, $model, $client, $requestFactory, $streamFactory,
-            $baseUri, $prompt, $maxRetries, $retryDelayMs, $temperature
+            $apiKey,
+            $model,
+            $client,
+            $requestFactory,
+            $streamFactory,
+            $baseUri,
+            $prompt,
+            $maxRetries,
+            $retryDelayMs,
+            $temperature
         );
     }
 }

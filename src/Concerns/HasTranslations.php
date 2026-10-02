@@ -267,7 +267,7 @@ trait HasTranslations
             return $this;
         }
 
-        if (!$this->exists) {
+        if (! $this->exists) {
             throw ModelNotSavedException::forModel(static::class);
         }
 
@@ -276,7 +276,7 @@ trait HasTranslations
         $this->getConnection()->transaction(function () use ($pending): void {
             foreach ($pending as $locale => $fields) {
                 $existing = $this->translations()->where('locale', $locale)->first();
-                $content  = array_merge($existing?->content ?? [], $fields);
+                $content = array_merge($existing?->content ?? [], $fields);
 
                 $this->translations()->updateOrCreate(
                     ['locale' => $locale],
@@ -304,7 +304,7 @@ trait HasTranslations
         }
 
         return (bool) $this->getConnection()->transaction(function () use ($options): bool {
-            if (!parent::save($options)) {
+            if (! parent::save($options)) {
                 return false;
             }
 
@@ -322,10 +322,10 @@ trait HasTranslations
     public function delete()
     {
         return $this->getConnection()->transaction(function () {
-            
+
             $deleted = parent::delete();
 
-            if ($deleted && !$this->isSoftDeleting()) {
+            if ($deleted && ! $this->isSoftDeleting()) {
                 $this->translations()->delete();
             }
 
@@ -359,7 +359,7 @@ trait HasTranslations
             return $query;
         }
 
-        return $query->with(['translations' => fn($relation) => $relation->whereIn('locale', $locales)]);
+        return $query->with(['translations' => fn ($relation) => $relation->whereIn('locale', $locales)]);
     }
 
     /**
@@ -399,7 +399,7 @@ trait HasTranslations
 
         if ($value === null) {
             $content = $this->translations->firstWhere('locale', $locale)?->content;
-            $value   = is_array($content) ? ($content[$key] ?? null) : null;
+            $value = is_array($content) ? ($content[$key] ?? null) : null;
         }
 
         if ($value === null || $value === '') {
@@ -435,7 +435,7 @@ trait HasTranslations
      */
     protected function assertTranslatable(string $key): void
     {
-        if (!$this->isTranslatable($key)) {
+        if (! $this->isTranslatable($key)) {
             throw NotTranslatableException::attribute(static::class, $key);
         }
     }
@@ -447,6 +447,6 @@ trait HasTranslations
      */
     protected function isSoftDeleting(): bool
     {
-        return method_exists($this, 'isForceDeleting') && !$this->isForceDeleting();
+        return method_exists($this, 'isForceDeleting') && ! $this->isForceDeleting();
     }
 }

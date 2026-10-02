@@ -9,4 +9,6 @@ use RuntimeException;
 /**
  * Base exception of the package. Catch this to handle every package error.
  */
-class TranslationException extends RuntimeException {}
+class TranslationException extends RuntimeException
+{
+}

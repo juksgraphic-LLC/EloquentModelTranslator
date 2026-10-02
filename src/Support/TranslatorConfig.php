@@ -46,17 +46,17 @@ final readonly class TranslatorConfig
             throw InvalidConfigurationException::emptyLocales();
         }
 
-        if (!in_array($sourceLocale, $locales, true)) {
+        if (! in_array($sourceLocale, $locales, true)) {
             throw InvalidConfigurationException::sourceLocaleNotAllowed($sourceLocale);
         }
 
         $fallbackLocale ??= $sourceLocale;
 
-        if (!in_array($fallbackLocale, $locales, true)) {
+        if (! in_array($fallbackLocale, $locales, true)) {
             throw InvalidConfigurationException::invalidFallback($fallbackLocale);
         }
 
-        $this->locales        = $locales;
+        $this->locales = $locales;
         $this->fallbackLocale = $fallbackLocale;
     }
 
@@ -102,7 +102,7 @@ final readonly class TranslatorConfig
      */
     public function assertAllowed(string $locale): void
     {
-        if (!$this->isAllowed($locale)) {
+        if (! $this->isAllowed($locale)) {
             throw UnsupportedLocaleException::forLocale($locale, $this->locales);
         }
     }

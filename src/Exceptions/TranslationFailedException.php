@@ -12,7 +12,6 @@ use Throwable;
  */
 class TranslationFailedException extends TranslationException
 {
-
     /**
      * Send an exception when a request has faild
      * @param string $provider
@@ -35,7 +34,6 @@ class TranslationFailedException extends TranslationException
         return new self("Provider [{$provider}] returned an invalid response: {$reason}.");
     }
 
- 
     /**
      * Send an exception where the provoder retunrs a response with missing keys
      * @param string $provider

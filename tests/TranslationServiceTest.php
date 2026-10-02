@@ -9,9 +9,9 @@ use Juksgraphic\EloquentModelTranslator\Tests\Fixtures\Article;
 use Juksgraphic\EloquentModelTranslator\Tests\Fixtures\CallbackProvider;
 
 beforeEach(function () {
-    $this->article  = Article::create(['title' => 'Bonjour', 'body' => 'Le monde', 'slug' => 'bonjour']);
+    $this->article = Article::create(['title' => 'Bonjour', 'body' => 'Le monde', 'slug' => 'bonjour']);
     $this->provider = new ArrayTranslationProvider();
-    $this->service  = new TranslationService($this->provider);
+    $this->service = new TranslationService($this->provider);
 });
 
 it('translates into every target locale', function () {

@@ -18,16 +18,15 @@ class DefaultTranslationPrompt implements TranslationPrompt
      * @param string $extraInstructions Appended to the system prompt (glossary, tone, brand names...).
      */
     public function __construct(
-        
         protected array $localeNames = [
             'fr' => 'French',
             'en' => 'English',
             'es' => 'Spanish',
             'ht' => 'Haitian Creole',
         ],
-        
         protected string $extraInstructions = '',
-    ) {}
+    ) {
+    }
 
     public function system(string $sourceLocale, string $targetLocale): string
     {
@@ -60,7 +59,7 @@ class DefaultTranslationPrompt implements TranslationPrompt
             throw TranslationFailedException::invalidResponse($provider, 'malformed JSON');
         }
 
-        if (!is_array($translated)) {
+        if (! is_array($translated)) {
             throw TranslationFailedException::invalidResponse($provider, 'content is not a JSON object');
         }
 

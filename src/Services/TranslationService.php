@@ -60,7 +60,7 @@ class TranslationService
         foreach ($this->config->targetLocales() as $locale) {
             $pending = $overwrite
                 ? $fields
-                : array_filter($fields, static fn($value, $key): bool => !$model->hasTranslation((string) $key, $locale), ARRAY_FILTER_USE_BOTH);
+                : array_filter($fields, static fn ($value, $key): bool => ! $model->hasTranslation((string) $key, $locale), ARRAY_FILTER_USE_BOTH);
 
             if ($pending === []) {
                 continue;
@@ -107,11 +107,11 @@ class TranslationService
     protected function extractFields(Model&Translatable $model, ?array $attributes): array
     {
         $attributes ??= $model->getTranslatableAttributes();
-        $raw          = $model->getAttributes();
-        $fields       = [];
+        $raw = $model->getAttributes();
+        $fields = [];
 
         foreach ($attributes as $attribute) {
-            if (!$model->isTranslatable($attribute)) {
+            if (! $model->isTranslatable($attribute)) {
                 throw NotTranslatableException::attribute($model::class, $attribute);
             }
 
@@ -147,7 +147,7 @@ class TranslationService
         $translated = array_intersect_key($translated, $fields);
 
         foreach ($translated as $value) {
-            if (!is_string($value) || trim($value) === '') {
+            if (! is_string($value) || trim($value) === '') {
                 throw TranslationFailedException::invalidResponse($this->provider::class, 'non-string or empty value');
             }
         }

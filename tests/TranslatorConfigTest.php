@@ -24,9 +24,9 @@ it('lists target locales without the source', function () {
 });
 
 it('validates locales, source and fallback', function () {
-    expect(fn() => new TranslatorConfig([], 'fr'))->toThrow(InvalidConfigurationException::class)
-        ->and(fn() => new TranslatorConfig(['en'], 'fr'))->toThrow(InvalidConfigurationException::class)
-        ->and(fn() => new TranslatorConfig(['fr', 'en'], 'fr', 'de'))->toThrow(InvalidConfigurationException::class);
+    expect(fn () => new TranslatorConfig([], 'fr'))->toThrow(InvalidConfigurationException::class)
+        ->and(fn () => new TranslatorConfig(['en'], 'fr'))->toThrow(InvalidConfigurationException::class)
+        ->and(fn () => new TranslatorConfig(['fr', 'en'], 'fr', 'de'))->toThrow(InvalidConfigurationException::class);
 });
 
 it('checks allowed and source locales', function () {
@@ -36,5 +36,5 @@ it('checks allowed and source locales', function () {
         ->and($config->isAllowed('de'))->toBeFalse()
         ->and($config->isSource('fr'))->toBeTrue()
         ->and($config->isSource('en'))->toBeFalse()
-        ->and(fn() => $config->assertAllowed('de'))->toThrow(UnsupportedLocaleException::class);
+        ->and(fn () => $config->assertAllowed('de'))->toThrow(UnsupportedLocaleException::class);
 });
