@@ -13,7 +13,6 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\HttpFactory;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
@@ -223,19 +222,15 @@ step($sections, '5. Eager loading (sans N+1)', 'Article::withTranslations() char
 // ------------------------------------------------------------------ 6. Real provider
 
 step($sections, '6. Provider réel (Cerebras)', 'Optionnel : définir CEREBRAS_API_KEY (et CEREBRAS_MODEL).', function () {
-    $apiKey = "csk-xj4d394dvtedcec8tfet2thvk3dy3k55kvxcpc458ehfjtrk";
+    $apiKey =getenv("CEREBRAS_API_KEY");
 
     if (!$apiKey || !class_exists(Client::class)) {
         return note('Ignoré : CEREBRAS_API_KEY absente ou guzzlehttp/guzzle non installé.');
     }
 
-    $factory = new HttpFactory();
     $real    = new CerebrasTranslationProvider(
         $apiKey,
-       "gpt-oss-120b",
-        new Client(['timeout' => 30]),
-        $factory,
-        $factory,
+        getenv("CEREBRAS_MODEL")
     );
 
     $fresh = Article::create(['title' => 'Bienvenue sur notre site', 'body' => 'Découvrez nos services.']);
