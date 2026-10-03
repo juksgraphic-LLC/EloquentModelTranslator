@@ -27,7 +27,7 @@
     },
     "require": {
         "php": "^8.4",
-        "illuminate/database": "^13.34",
+        "illuminate/database": "^12.52|^13.34",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.1",
         "psr/http-message": "^2.0"
