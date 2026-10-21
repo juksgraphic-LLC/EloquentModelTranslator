@@ -292,6 +292,54 @@ trait HasTranslations
     }
 
     /**
+     * Attributes that have source value but not translations for the locale
+     * @param string $locale
+     * @return list<string>
+     */
+    public function getUntranslatedAttributes(string $locale): array
+    {
+        $config = Translator::config();
+
+        if ($config->isSource($locale)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $this->getTranslatableAttributes(),
+            fn(string $key): bool => $this->hasTranslation($key, $config->sourceLocale)
+                && ! $this->hasTranslation($key, $locale)
+        ));
+    }
+
+    /**
+     * Translations status for a locale : source | complete | parial | missing
+     * Only the attributes that have a source value are taken into account
+     * @param string $locale
+     * @return 'source'|'complete'|'partial'|'missing'
+     */
+    public function getTranslationStatus(string $locale): string
+    {
+        $config = Translator::config();
+
+        if ($config->isSource($locale)) {
+            return 'source';
+        }
+
+        $total = count(array_filter(
+            $this->getTranslatableAttributes(),
+            fn(string $key): bool => $this->hasTranslation($key, $config->sourceLocale)
+        ));
+
+        $missing = count($this->getUntranslatedAttributes($locale));
+
+        return match (true) {
+            $total === 0, $missing === 0 => 'complete',
+            $missing === $total          => 'missing',
+            default                      => 'partial',
+        };
+    }
+
+    /**
      * Saves the model, then its staged translations, in one transaction.
      *
      * @param array<string, mixed> $options
@@ -359,7 +407,7 @@ trait HasTranslations
             return $query;
         }
 
-        return $query->with(['translations' => fn ($relation) => $relation->whereIn('locale', $locales)]);
+        return $query->with(['translations' => fn($relation) => $relation->whereIn('locale', $locales)]);
     }
 
     /**
