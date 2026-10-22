@@ -179,3 +179,118 @@ it('eager loads translations without N+1 queries', function () {
     expect($connection->getQueryLog())->toHaveCount(2)
         ->and($titles)->toContain('Title 1', 'Title 2', 'Title 3');
 });
+
+
+// ---------------------------------------------------------------------------
+// getUntranslatedAttributes()
+// ---------------------------------------------------------------------------
+
+it('returns no untranslated attributes for the source locale', function () {
+    expect($this->article->getUntranslatedAttributes('fr'))->toBe([]);
+});
+
+it('lists every attribute with a source value when nothing is translated', function () {
+    expect($this->article->getUntranslatedAttributes('en'))
+        ->toEqualCanonicalizing(['title', 'body']);
+});
+
+it('excludes attributes that already have a translation', function () {
+    $this->article->setTranslation('title', 'en', 'Hello')->save();
+
+    expect($this->article->getUntranslatedAttributes('en'))->toBe(['body']);
+});
+
+it('returns an empty list when every attribute is translated', function () {
+    $this->article->setTranslations('en', ['title' => 'Hello', 'body' => 'The world'])->save();
+
+    expect($this->article->getUntranslatedAttributes('en'))->toBe([]);
+});
+
+it('ignores attributes that have no source value', function () {
+    $article = Article::create(['title' => 'Salut', 'slug' => 'salut']);
+
+    expect($article->getUntranslatedAttributes('en'))->toBe(['title']);
+});
+
+it('treats an empty translation as untranslated', function () {
+    $this->article->setTranslation('title', 'en', '')->save();
+
+    expect($this->article->getUntranslatedAttributes('en'))
+        ->toEqualCanonicalizing(['title', 'body']);
+});
+
+it('counts staged translations as translated', function () {
+    $this->article->setTranslation('title', 'en', 'Draft');
+
+    expect($this->article->getUntranslatedAttributes('en'))->toBe(['body'])
+        ->and(Translation::count())->toBe(0);
+});
+
+it('computes untranslated attributes per locale', function () {
+    $this->article->setTranslation('title', 'en', 'Hello')->save();
+
+    expect($this->article->getUntranslatedAttributes('en'))->toBe(['body'])
+        ->and($this->article->getUntranslatedAttributes('es'))
+        ->toEqualCanonicalizing(['title', 'body']);
+});
+
+// ---------------------------------------------------------------------------
+// getTranslationStatus()
+// ---------------------------------------------------------------------------
+
+it('reports the source status for the source locale', function () {
+    expect($this->article->getTranslationStatus('fr'))->toBe('source');
+});
+
+it('reports a missing status when no attribute is translated', function () {
+    expect($this->article->getTranslationStatus('en'))->toBe('missing');
+});
+
+it('reports a partial status when only some attributes are translated', function () {
+    $this->article->setTranslation('title', 'en', 'Hello')->save();
+
+    expect($this->article->getTranslationStatus('en'))->toBe('partial');
+});
+
+it('reports a complete status when every attribute is translated', function () {
+    $this->article->setTranslations('en', ['title' => 'Hello', 'body' => 'The world'])->save();
+
+    expect($this->article->getTranslationStatus('en'))->toBe('complete');
+});
+
+it('only takes attributes with a source value into account', function () {
+    $article = Article::create(['title' => 'Salut', 'slug' => 'salut']);
+
+    expect($article->getTranslationStatus('en'))->toBe('missing');
+
+    $article->setTranslation('title', 'en', 'Hi')->save();
+
+    expect($article->getTranslationStatus('en'))->toBe('complete');
+});
+
+it('reports a complete status when there is nothing to translate', function () {
+    $article = Article::create(['title' => '', 'slug' => 'vide']);
+
+    expect($article->getTranslationStatus('en'))->toBe('complete');
+});
+
+it('treats an empty translation as missing in the status', function () {
+    $this->article->setTranslations('en', ['title' => '', 'body' => ''])->save();
+
+    expect($this->article->getTranslationStatus('en'))->toBe('missing');
+});
+
+it('reports the status per locale', function () {
+    $this->article->setTranslation('title', 'en', 'Hello')->save();
+
+    expect($this->article->getTranslationStatus('en'))->toBe('partial')
+        ->and($this->article->getTranslationStatus('es'))->toBe('missing')
+        ->and($this->article->getTranslationStatus('fr'))->toBe('source');
+});
+
+it('takes staged translations into account in the status', function () {
+    $this->article->setTranslations('en', ['title' => 'Hello', 'body' => 'The world']);
+
+    expect($this->article->getTranslationStatus('en'))->toBe('complete')
+        ->and(Translation::count())->toBe(0);
+});
