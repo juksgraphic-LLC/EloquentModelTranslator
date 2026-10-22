@@ -306,7 +306,7 @@ trait HasTranslations
 
         return array_values(array_filter(
             $this->getTranslatableAttributes(),
-            fn(string $key): bool => $this->hasTranslation($key, $config->sourceLocale)
+            fn (string $key): bool => $this->hasTranslation($key, $config->sourceLocale)
                 && ! $this->hasTranslation($key, $locale)
         ));
     }
@@ -327,15 +327,15 @@ trait HasTranslations
 
         $total = count(array_filter(
             $this->getTranslatableAttributes(),
-            fn(string $key): bool => $this->hasTranslation($key, $config->sourceLocale)
+            fn (string $key): bool => $this->hasTranslation($key, $config->sourceLocale)
         ));
 
         $missing = count($this->getUntranslatedAttributes($locale));
 
         return match (true) {
             $total === 0, $missing === 0 => 'complete',
-            $missing === $total          => 'missing',
-            default                      => 'partial',
+            $missing === $total => 'missing',
+            default => 'partial',
         };
     }
 
@@ -407,7 +407,7 @@ trait HasTranslations
             return $query;
         }
 
-        return $query->with(['translations' => fn($relation) => $relation->whereIn('locale', $locales)]);
+        return $query->with(['translations' => fn ($relation) => $relation->whereIn('locale', $locales)]);
     }
 
     /**
